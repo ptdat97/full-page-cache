@@ -1,0 +1,8 @@
+{
+    "name": "Full Page Cache",
+    "version": "1.0.0",
+    "namespace": "Botble\\FullPageCache\\",
+    "provider": "Botble\\FullPageCache\\Providers\\FullPageCacheServiceProvider",
+    "author": "Botble Users Community",
+    "description": "Plugin Full Page Cache helps speed up your Botble website, easy to use and user-friendly."
+}
