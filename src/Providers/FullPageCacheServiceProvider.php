@@ -53,8 +53,6 @@ class FullPageCacheServiceProvider extends ServiceProvider
     
     
     
-        // Middleware cache full page
-        $this->app['router']->pushMiddlewareToGroup('web', \Botble\FullPageCache\Middleware\FullPageCacheMiddleware::class);
 
         // Tự động xóa cache khi bài viết/sản phẩm được thay đổi
         Event::listen([
@@ -80,16 +78,24 @@ class FullPageCacheServiceProvider extends ServiceProvider
     }
     
     public function register(): void
-    {
+{
     $this->setNamespace('plugins/full-page-cache')
         ->loadHelpers();
+
+    if ($this->app->runningInConsole()) {
+        $this->commands([
+            \Botble\FullPageCache\Console\ClearPageCacheCommand::class,
+        ]);
     }
+}
+
 
     protected function clearCache(): void
-    {
-        $path = storage_path('fullpage-cache');
-        if (File::exists($path)) {
-            File::cleanDirectory($path);
-        }
+{
+    $path = storage_path('fullpage-cache');
+    if (File::isDirectory($path)) {
+        File::deleteDirectory($path);
     }
+}
+
 }
