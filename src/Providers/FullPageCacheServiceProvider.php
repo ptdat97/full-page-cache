@@ -2,26 +2,57 @@
 
 namespace Botble\FullPageCache\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Botble\Base\Supports\ServiceProvider;
+use Botble\Base\Traits\LoadAndPublishDataTrait;
+use Botble\Base\Facades\DashboardMenu;
+use Botble\FullPageCache\Models\FullPageCache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
-use Botble\Base\Facades\DashboardMenu;
 use Botble\FullPageCache\Console\ClearPageCacheCommand;
 
 class FullPageCacheServiceProvider extends ServiceProvider
 {
-    public function register()
-    {
-        // Đăng ký command Artisan
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                ClearPageCacheCommand::class,
-            ]);
-        }
-    }
+    use LoadAndPublishDataTrait;
 
-    public function boot()
+    public function boot(): void
     {
+        $this
+            ->setNamespace('plugins/full-page-cache')
+            ->loadHelpers()
+            ->loadAndPublishConfigurations(['permissions'])
+            ->loadAndPublishTranslations()
+            ->loadRoutes()
+            ->loadAndPublishViews()
+            ->loadMigrations();
+            
+            if (defined('LANGUAGE_ADVANCED_MODULE_SCREEN_NAME')) {
+                \Botble\LanguageAdvanced\Supports\LanguageAdvancedManager::registerModule(FullPageCache::class, [
+                    'name',
+                ]);
+            }           
+            
+            DashboardMenu::default()->beforeRetrieving(function () {
+            DashboardMenu::registerItem([
+                'id'        => 'full-page-cache-parent',
+                'priority'  => 1,
+                'parent_id' => null,
+                'name'      => 'Full Page Cache',
+                'icon'      => 'fas fa-database',
+            ]);
+
+                    DashboardMenu::registerItem([
+                'id'         => 'full-page-cache',
+                'priority'   => 1,
+                'parent_id'  => 'full-page-cache-parent',
+                'name'       => 'Clear Cache',
+                'icon'       => 'ti ti-box',
+                'url'        => url(config('core.base.general.admin_dir', 'admin') . '/fullpagecache/clear'),
+                'permissions'=> [],
+            ]);
+        });
+    
+    
+    
         // Middleware cache full page
         $this->app['router']->pushMiddlewareToGroup('web', \Botble\FullPageCache\Middleware\FullPageCacheMiddleware::class);
 
@@ -46,38 +77,15 @@ class FullPageCacheServiceProvider extends ServiceProvider
                 return redirect()->back()->with('success_msg', 'All cache has been cleared!');
             })->name('fullpagecache.clear');
         });
-
-        // Thêm menu trên backend
-
-
-        DashboardMenu::default()->beforeRetrieving(function () {
-            DashboardMenu::registerItem([
-                'id'        => 'full-page-cache-parent',
-                'priority'  => 1,
-                'parent_id' => null,
-                'name'      => 'Full Page Cache',
-                'icon'      => 'fas fa-database',
-            ]);
-
-                    DashboardMenu::registerItem([
-                'id'         => 'full-page-cache',
-                'priority'   => 1,
-                'parent_id'  => 'full-page-cache-parent',
-                'name'       => 'Clear Cache',
-                'icon'       => 'fas fa-database',
-                'url'        => url(config('core.base.general.admin_dir', 'admin') . '/fullpagecache/clear'),
-                'permissions'=> [],
-            ]);
-        });
-
-
-
+    }
+    
+    public function register(): void
+    {
+    $this->setNamespace('plugins/full-page-cache')
+        ->loadHelpers();
     }
 
-    /**
-     * Xóa toàn bộ cache.
-     */
-    public function clearCache()
+    protected function clearCache(): void
     {
         $path = storage_path('fullpage-cache');
         if (File::exists($path)) {

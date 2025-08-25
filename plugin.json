@@ -1,9 +1,11 @@
 {
+    "id": "datpt/full-page-cache",
     "name": "Full Page Cache",
-    "id": "buc/full-page-cache",
-    "version": "1.0.2",
     "namespace": "Botble\\FullPageCache\\",
     "provider": "Botble\\FullPageCache\\Providers\\FullPageCacheServiceProvider",
-    "author": "Botble Users Community",
-    "description": "Plugin Full Page Cache helps speed up your Botble website, easy to use and user-friendly."
+    "author": "",
+    "url": "",
+    "version": "1.0.0",
+    "description": "",
+    "minimum_core_version": "7.5.8"
 }

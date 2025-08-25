@@ -31,4 +31,13 @@ class CacheHelper
             File::delete($file);
         }
     }
+
+    function clear_full_page_cache(): void
+    {
+        $path = public_path('cache/full-page');
+
+        if (file_exists($path)) {
+            \File::deleteDirectory($path);
+        }
+    }
 }
