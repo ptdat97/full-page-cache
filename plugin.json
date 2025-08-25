@@ -1,5 +1,6 @@
 {
     "name": "Full Page Cache",
+    "id": "full-page-cache",
     "version": "1.0.0",
     "namespace": "Botble\\FullPageCache\\",
     "provider": "Botble\\FullPageCache\\Providers\\FullPageCacheServiceProvider",
