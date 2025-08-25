@@ -43,31 +43,31 @@ class FullPageCacheServiceProvider extends ServiceProvider
         ], function () {
             $this->app['router']->get('fullpagecache/clear', function () {
                 $this->clearCache();
-                return redirect()->back()->with('success_msg', 'Đã xóa toàn bộ cache!');
+                return redirect()->back()->with('success_msg', 'All cache has been cleared!');
             })->name('fullpagecache.clear');
         });
 
         // Thêm menu trên backend
 
 
-DashboardMenu::default()->beforeRetrieving(function () {
+        DashboardMenu::default()->beforeRetrieving(function () {
             DashboardMenu::registerItem([
                 'id'        => 'full-page-cache-parent',
-                'priority'  => 5,
+                'priority'  => 1,
                 'parent_id' => null,
                 'name'      => 'Full Page Cache',
                 'icon'      => 'fas fa-database',
             ]);
 
                     DashboardMenu::registerItem([
-    'id'         => 'full-page-cache',
-    'priority'   => 1,
-    'parent_id'  => 'full-page-cache-parent',
-    'name'       => 'Clear Cache',
-    'icon'       => 'fas fa-database',
-    'url'        => url(config('core.base.general.admin_dir', 'admin') . '/fullpagecache/clear'),
-    'permissions'=> [],
-]);
+                'id'         => 'full-page-cache',
+                'priority'   => 1,
+                'parent_id'  => 'full-page-cache-parent',
+                'name'       => 'Clear Cache',
+                'icon'       => 'fas fa-database',
+                'url'        => url(config('core.base.general.admin_dir', 'admin') . '/fullpagecache/clear'),
+                'permissions'=> [],
+            ]);
         });
 
 
